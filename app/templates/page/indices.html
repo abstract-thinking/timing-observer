@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Indices</title>
+</head>
+<body>
+
+<table>
+<tbody>
+  {% for index in indices %}
+    <tr>
+      <td>{{index.id}}</td>
+      <td>{{index.description}}</td>
+    </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+</body>
+</html>

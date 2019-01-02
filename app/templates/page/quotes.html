@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quotes</title>
+</head>
+<body>
+
+<table>
+<tbody>
+  {% for quote in quotes %}
+    <tr>
+      <td>{{quote.code_id}}</td>
+      <td>{{quote.date}}</td>
+      <td>{{quote.close}}</td>
+      <td>{{quote.rsl}}</td>
+    </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+</body>
+</html>
