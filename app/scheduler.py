@@ -45,13 +45,13 @@ def fetch_data_from_bb():
     db = get_db()
 
     projection = (time.strftime("%Y-%m-%d"), interest_rate, inflation_rate, exchange_rate)
-    sql = '''INSERT INTO indicators(date, interest_rate, inflation_rate, exchange_rate) VALUES(?,?,?,?)'''
+    sql = '''INSERT INTO germany_indicator(date, interest_rate, inflation_rate, exchange_rate) VALUES(?,?,?,?)'''
     db.execute(sql, projection)
     db.commit()
 
 
 def calculate_germany_indicator():
-    command = """SELECT * FROM indicators WHERE date > '1970-01-01'"""
+    command = """SELECT * FROM germany_indicator WHERE date > '1970-01-01'"""
     df = pd.read_sql(command, get_db())
 
     # Season
@@ -69,7 +69,7 @@ def calculate_germany_indicator():
     df['sum_of_points'] = df['season_point'] + df['inflation_point'] + df['exchange_point'] + df['interest_point']
 
     df = df[['date', 'season_point', 'interest_rate', 'interest_point', 'inflation_rate', 'inflation_point',
-             'exchange_rate', 'exchange_point', 'sum_of_points' ]]
+             'exchange_rate', 'exchange_point', 'sum_of_points']]
 
     df.to_sql('indicators')
     #df = df.iloc[::-1]
@@ -95,11 +95,15 @@ def was_interest_rate_change(value):
         return np.NaN
 
 
-def fetch_data_from_yahoo_and_calculate_rsl():
+def fetch_data_and_calculate_rsl():
+    fetch_data_from_yahoo()
+    calculate_rsl()
+
+
+def fetch_data_from_yahoo():
     db = get_db()
     indices = db.execute('SELECT id, code FROM indices').fetchall()
     for index in indices:
-        index_id = index['id']
         data = fetch_data(index['code'])
         quotes = extract_data(data)
 
@@ -110,10 +114,16 @@ def fetch_data_from_yahoo_and_calculate_rsl():
         for quote in quotes:
             date_id = db.execute('SELECT id FROM dates WHERE date = ?', (quote['date'],)).fetchone()
             db.execute('INSERT INTO quotes (close, date_id, code_id) VALUES(?, ?, ?)',
-                       (quote['close'], date_id['id'], index_id))
+                       (quote['close'], date_id['id'], index['id']))
         db.commit()
 
-        # TODO: Separate
+
+def calculate_rsl():
+    db = get_db()
+
+    indices = db.execute('SELECT id, code FROM indices').fetchall()
+    for index in indices:
+        index_id = index['id']
         count = db.execute('SELECT COUNT(*) AS cnt FROM quotes '
                            'WHERE quotes.code_id = ? GROUp by code_id HAVING cnt >= 27',
                            (index_id,)).fetchall()
