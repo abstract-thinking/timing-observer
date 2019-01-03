@@ -2,18 +2,16 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse
 
 
-def find_history_prices(tag):
+def find_historical_prices(tag):
     return tag.name == 'table' and tag.has_attr('data-test') and tag['data-test'] == 'historical-prices'
 
 
 def extract_data(data):
     soup = BeautifulSoup(data, 'lxml')
 
-    historical_prices = []
+    historical_quotes = []
 
-    #language = soup.find('html').attrs['lang']
-
-    rows = soup.find(find_history_prices).find('tbody').find_all('tr')
+    rows = soup.find(find_historical_prices).find('tbody').find_all('tr')
 
     for row in rows:
         cells = row.find_all('td')
@@ -28,11 +26,7 @@ def extract_data(data):
             date = dt.strftime('%Y-%m-%d')
             close = float(cells[4].text.strip().replace(",", ""))
 
-            price = {'date': date, 'close': close}
-            historical_prices.append(price)
+            quote = {'date': date, 'close': close}
+            historical_quotes.append(quote)
 
-            #print("Added {0} {1} to the list".format(date, close))
-
-    # print(historical_prices)
-
-    return historical_prices
+    return historical_quotes

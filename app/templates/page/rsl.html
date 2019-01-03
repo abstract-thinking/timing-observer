@@ -8,19 +8,17 @@
         <table>
             <thead>
                 <tr>
-                    <td>Code ID</td>
                     <td>Date</td>
-                    <td>Close</td>
                     <td>RSL</td>
                 </tr>
             </thead>
             <tbody>
+                {% for quote in rsls %}
                 <tr>
-                  <td>{{quote.code_id}}</td>
-                  <td>{{quote.date}}</td>
-                  <td>{{quote.close}}</td>
-                  <td>{{quote.rsl}}</td>
+                    <td>?</td>
+                    <td>{{quote.rsl}}</td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </body>

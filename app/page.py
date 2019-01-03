@@ -1,6 +1,4 @@
-from flask import (
-    Blueprint, render_template
-)
+from flask import Blueprint, render_template
 
 from app.db import get_db
 
@@ -25,15 +23,22 @@ def show_quotes():
     return render_template('page/quotes.html', quotes=quotes)
 
 
-# https://stackoverflow.com/questions/29855081/how-to-get-a-list-of-dates-from-a-week-number-in-python
 @bp.route('/rsl')
 def rsl():
     db = get_db()
-    quote = db.execute(
-        """SELECT avg(rsl) AS "RSL" FROM quotes WHERE quotes.date_id IN 
-        (SELECT id FROM dates WHERE date > (SELECT DATETIME('now', '-3 day')))"""
-    ).fetchone()
-    return render_template('page/rsl.html', quote=quote)
+
+    from datetime import datetime, timedelta
+    today = datetime.now().date()
+
+    rsls = []
+    for weeks in range(0, 52):
+        past = today - timedelta(weeks=weeks)
+        start = past - timedelta(days=today.weekday())
+        end = start + timedelta(days=6)
+        sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(start, end)
+        rsls.append(db.execute(sql).fetchone())
+
+    return render_template('page/rsl.html', rsls=rsls)
 
 
 @bp.route('/gi')

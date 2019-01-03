@@ -10,10 +10,12 @@ from app.yahoo.YahooDataExtractor import extract_data
 from app.db import get_db
 from app.calculator import calculate_relative_strength
 
+from flask import current_app
 from flask.cli import with_appcontext
 
 from pandasdmx import Request
 from bs4 import BeautifulSoup
+
 
 BB_URL = 'https://www.bundesbank.de/cae/servlet/StatisticDownload?tsId=BBEX3.M.USD.EUR.BB.AC.A01&its_fileFormat=sdmx&mode=its'
 
@@ -23,6 +25,7 @@ INVESTMENT_FRIENDLY_MONTHS = [11, 12, 1, 2, 3, 4]
 def fetch_data_and_calculate_gi():
     fetch_data_from_bb()
     calculate_gi()
+    current_app.logger.info('GI done.')
 
 
 def fetch_data_from_bb():
@@ -78,7 +81,7 @@ def calculate_gi():
 def calculate_interest_rate(results):
     tmp = pd.DataFrame(results.values, columns=['decision']).diff()
 
-    tmp['decision'] = tmp['decision'].apply(lambda v: was_interest_rate_change(v))
+    tmp['decision'] = tmp['decision'].apply(lambda v: was_an_interest_rate_change(v))
     tmp['decision'].fillna(method='ffill', inplace=True)
     tmp['decision'].fillna(0, inplace=True)
     tmp['decision'] = tmp['decision'].astype(int)
@@ -86,7 +89,7 @@ def calculate_interest_rate(results):
     return tmp['decision'].values
 
 
-def was_interest_rate_change(value):
+def was_an_interest_rate_change(value):
     if value < 0:
         return 1
     elif value > 0:
@@ -98,6 +101,7 @@ def was_interest_rate_change(value):
 def fetch_data_and_calculate_rsl():
     fetch_data_from_yahoo()
     calculate_rsl()
+    current_app.logger.info('RSL done.')
 
 
 def fetch_data_from_yahoo():
@@ -107,15 +111,16 @@ def fetch_data_from_yahoo():
         data = fetch_data(index['code'])
         quotes = extract_data(data)
 
-        for quote in quotes:
-            db.execute('INSERT OR IGNORE INTO dates (date) VALUES(?)', (quote['date'],))
-        db.commit()
+        if quotes is not None:
+            for quote in quotes:
+                db.execute('INSERT OR IGNORE INTO dates (date) VALUES(?)', (quote['date'],))
+            db.commit()
 
-        for quote in quotes:
-            date_id = db.execute('SELECT id FROM dates WHERE date = ?', (quote['date'],)).fetchone()
-            db.execute('INSERT INTO quotes (close, date_id, code_id) VALUES(?, ?, ?)',
-                       (quote['close'], date_id['id'], index['id']))
-        db.commit()
+            for quote in quotes:
+                date_id = db.execute('SELECT id FROM dates WHERE date = ?', (quote['date'],)).fetchone()
+                db.execute('INSERT INTO quotes (close, date_id, code_id) VALUES(?, ?, ?)',
+                           (quote['close'], date_id['id'], index['id']))
+            db.commit()
 
 
 def calculate_rsl():
@@ -125,7 +130,7 @@ def calculate_rsl():
     for index in indices:
         index_id = index['id']
         count = db.execute('SELECT COUNT(*) AS cnt FROM quotes '
-                           'WHERE quotes.code_id = ? GROUp by code_id HAVING cnt >= 27',
+                           'WHERE quotes.code_id = ? GROUP BY code_id HAVING cnt >= 27',
                            (index_id,)).fetchall()
         if not count:
             print('No history data for index {}'.format(index['code']))
@@ -138,7 +143,6 @@ def calculate_rsl():
                             (index_id,)).fetchmany(count[0][0])
         rsls = calculate_relative_strength(closes)
 
-        # date_id = db.execute('SELECT id FROM dates WHERE date = ?', (closes[0]['date'],)).fetchone()
         for rsl in rsls:
             db.execute('UPDATE quotes SET rsl = ? WHERE code_id = ? AND date_id = ?',
                        (rsl[1], index_id, rsl[0]))
@@ -149,7 +153,7 @@ def calculate_rsl():
 @with_appcontext
 def fetch_data_for_gi_command():
     """ Fetch data from Yahoo server."""
-    fetch_data_from_yahoo_and_calculate_rsl()
+    fetch_data_and_calculate_gi()
     click.echo("Fetched and calculated successfully data for Germany indicator.")
 
 
@@ -157,7 +161,7 @@ def fetch_data_for_gi_command():
 @with_appcontext
 def fetch_data_for_rsl_command():
     """ Fetch data from Yahoo server."""
-    fetch_data_from_yahoo_and_calculate_rsl()
+    fetch_data_and_calculate_rsl()
     click.echo("Fetched and calculated successfully data for RSL.")
 
 
