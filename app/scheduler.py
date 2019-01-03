@@ -20,9 +20,9 @@ BB_URL = 'https://www.bundesbank.de/cae/servlet/StatisticDownload?tsId=BBEX3.M.U
 INVESTMENT_FRIENDLY_MONTHS = [11, 12, 1, 2, 3, 4]
 
 
-def fetch_data_and_calculate_germany_indicator():
+def fetch_data_and_calculate_gi():
     fetch_data_from_bb()
-    calculate_germany_indicator()
+    calculate_gi()
 
 
 def fetch_data_from_bb():
@@ -50,7 +50,7 @@ def fetch_data_from_bb():
     db.commit()
 
 
-def calculate_germany_indicator():
+def calculate_gi():
     command = """SELECT * FROM germany_indicator WHERE date > '1970-01-01'"""
     df = pd.read_sql(command, get_db())
 

@@ -37,8 +37,8 @@ def rsl():
 
 
 @bp.route('/gi')
-def indicate():
+def gi():
     db = get_db()
-    gi = db.execute("""SELECT * FROM germany_indicator WHERE date > '1970-01-01'""").fetchall()
+    germany_indicator = db.execute("""SELECT * FROM germany_indicator WHERE date > '1970-01-01'""").fetchall()
 
-    return render_template("page/gi.html", gi=gi)
+    return render_template('page/gi.html', gi=germany_indicator)

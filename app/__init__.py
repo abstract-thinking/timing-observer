@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, url_for, render_template
 
 
 def create_app(test_config=None):
@@ -29,6 +29,11 @@ def create_app(test_config=None):
     def ping(text):
         return 'Pong, {}!'.format(text)
 
+    @app.route('/')
+    @app.route('/index')
+    def index():
+        return render_template('index.html')
+
     from . import db
     db.init_app(app)
 
@@ -36,6 +41,7 @@ def create_app(test_config=None):
     app.register_blueprint(page.bp)
     # app.add_url_rule('/', endpoint='index')
 
+    # Not sure if really flask should do the cron job
     from . import scheduler
     scheduler.init_app(app)
 
@@ -43,8 +49,8 @@ def create_app(test_config=None):
     ap_scheduler = APScheduler(app=app)
     ap_scheduler.add_job("rsl", scheduler.fetch_data_and_calculate_rsl,
                          trigger='cron', day_of_week='5', hour='3')
-    ap_scheduler.add_job("gi", scheduler.fetch_data_and_calculate_germany_indicator,
-                         trigger='cron', month='*', day='1', hour='4')
+    ap_scheduler.add_job("gi", scheduler.fetch_data_and_calculate_gi,
+                         trigger='cron', day='1', hour='4')
     ap_scheduler.start()
 
     return app
