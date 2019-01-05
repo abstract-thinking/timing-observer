@@ -13,10 +13,10 @@
                 </tr>
             </thead>
             <tbody>
-                {% for quote in rsls %}
+                {% for entry in result %}
                 <tr>
-                    <td>?</td>
-                    <td>{{quote.rsl}}</td>
+                    <td>{{entry[0]}} - {{entry[1]}}</td>
+                    <td>{{entry[2]}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

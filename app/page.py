@@ -30,15 +30,19 @@ def rsl():
     from datetime import datetime, timedelta
     today = datetime.now().date()
 
-    rsls = []
+    result = []
     for weeks in range(0, 52):
         past = today - timedelta(weeks=weeks)
         start = past - timedelta(days=today.weekday())
         end = start + timedelta(days=6)
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(start, end)
-        rsls.append(db.execute(sql).fetchone())
+        rsl = db.execute(sql).fetchone()[0]
+        if rsl is not None:
+            rsl = round(rsl, 4)
 
-    return render_template('page/rsl.html', rsls=rsls)
+        result.append((start, end, rsl))
+
+    return render_template('page/rsl.html', result=result)
 
 
 @bp.route('/gi')
