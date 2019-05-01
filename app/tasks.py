@@ -1,4 +1,5 @@
-import click
+from sched import scheduler
+
 import time
 import requests
 import pandas as pd
@@ -11,7 +12,6 @@ from app.db import get_db
 from app.calculator import calculate_relative_strength
 
 from flask import current_app
-from flask.cli import with_appcontext
 
 from pandasdmx import Request
 from bs4 import BeautifulSoup
@@ -22,6 +22,7 @@ BB_URL = 'https://www.bundesbank.de/cae/servlet/StatisticDownload?tsId=BBEX3.M.U
 INVESTMENT_FRIENDLY_MONTHS = [11, 12, 1, 2, 3, 4]
 
 
+@scheduler.task('cron', id='gi', day='1', hour='2')
 def fetch_data_and_calculate_gi():
     fetch_data_from_bb()
     calculate_gi()
@@ -98,6 +99,7 @@ def was_an_interest_rate_change(value):
         return np.NaN
 
 
+@scheduler.task('cron', id='rsl', day='1', day_of_week='sat', hour='1')
 def fetch_data_and_calculate_rsl():
     fetch_data_from_yahoo()
     calculate_rsl()
@@ -147,24 +149,3 @@ def calculate_rsl():
             db.execute('UPDATE quotes SET rsl = ? WHERE code_id = ? AND date_id = ?',
                        (rsl[1], index_id, rsl[0]))
         db.commit()
-
-
-@click.command('calculate-gi')
-@with_appcontext
-def fetch_data_for_gi_command():
-    """ Fetch data from Yahoo server."""
-    fetch_data_and_calculate_gi()
-    click.echo("Fetched and calculated successfully data for Germany indicator.")
-
-
-@click.command('calculate-rsl')
-@with_appcontext
-def fetch_data_for_rsl_command():
-    """ Fetch data from Yahoo server."""
-    fetch_data_and_calculate_rsl()
-    click.echo("Fetched and calculated successfully data for RSL.")
-
-
-def init_app(app):
-    app.cli.add_command(fetch_data_for_gi_command)
-    app.cli.add_command(fetch_data_for_rsl_command)
