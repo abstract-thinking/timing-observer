@@ -678,3 +678,7 @@ INSERT INTO `germany_indicator` (id,date,season_point,interest_rate,interest_poi
 INSERT INTO `germany_indicator` (id,date,season_point,interest_rate,interest_point,inflation_rate,inflation_point,exchange_rate,exchange_point,sum_of_points) VALUES (600,'2018-01-11',1,0.0,1,2.1,0,1.1318,1,3);
 INSERT INTO `germany_indicator` (id,date,season_point,interest_rate,interest_point,inflation_rate,inflation_point,exchange_rate,exchange_point,sum_of_points) VALUES (601,'2018-03-12',1,0.0,1,2.2,0,1.1359,1,3);
 INSERT INTO `germany_indicator` (id,date,season_point,interest_rate,interest_point,inflation_rate,inflation_point,exchange_rate,exchange_point,sum_of_points) VALUES (602,'2019-02-01',1,0.0,1,1.9,0,1.145,1,3);
+INSERT INTO `germany_indicator` (id,date,season_point,interest_rate,interest_point,inflation_rate,inflation_point,exchange_rate,exchange_point,sum_of_points) VALUES (603,'2019-01-02',1,0.0,1,1.5,0,1.1488,1,3);
+INSERT INTO `germany_indicator` (id,date,season_point,interest_rate,interest_point,inflation_rate,inflation_point,exchange_rate,exchange_point,sum_of_points) VALUES (604,'2019-01-03',1,0.0,1,1.4,0,1.1416,1,3);
+INSERT INTO `germany_indicator` (id,date,season_point,interest_rate,interest_point,inflation_rate,inflation_point,exchange_rate,exchange_point,sum_of_points) VALUES (605,'2019-01-04',1,0.0,1,1.5,0,1.1235,1,3);
+INSERT INTO `germany_indicator` (id,date,season_point,interest_rate,interest_point,inflation_rate,inflation_point,exchange_rate,exchange_point,sum_of_points) VALUES (606,'2019-02-05',0,0.0,1,1.4,0,1.1218,1,2);
