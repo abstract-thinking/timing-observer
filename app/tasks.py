@@ -1,4 +1,4 @@
-from sched import scheduler
+from flask_apscheduler import scheduler
 
 import time
 import requests
