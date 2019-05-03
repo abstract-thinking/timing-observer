@@ -1,10 +1,10 @@
-from flask_apscheduler import scheduler
 
 import time
 import requests
 import pandas as pd
 import numpy as np
 
+from app import scheduler
 from app.yahoo.YahooDataFetcher import fetch_data
 from app.yahoo.YahooDataExtractor import extract_data
 

@@ -2,8 +2,10 @@ import os
 import logging
 
 from flask import Flask, url_for, render_template
+from flask_apscheduler import APScheduler
 from logging.handlers import SMTPHandler, RotatingFileHandler
 
+scheduler = APScheduler()
 
 def create_app(test_config=None):
     # create and configure the app
@@ -43,10 +45,8 @@ def create_app(test_config=None):
     app.register_blueprint(page.bp)
     # app.add_url_rule('/', endpoint='index')
 
-    from flask_apscheduler import APScheduler
-    ap_scheduler = APScheduler()
-    ap_scheduler.init_app(app)
-    ap_scheduler.start()
+    scheduler.init_app(app)
+    scheduler.start()
 
     if not app.debug:
         if app.config['MAIL_SERVER']:
