@@ -24,9 +24,10 @@ INVESTMENT_FRIENDLY_MONTHS = [11, 12, 1, 2, 3, 4]
 
 @scheduler.task('cron', id='gi', day='1', hour='2')
 def fetch_data_and_calculate_gi():
+    current_app.logger.info('Starting fetching and calculating GI')
     fetch_data_from_bb()
     calculate_gi()
-    current_app.logger.info('GI done.')
+    current_app.logger.info('Fetching and calculating GI done.')
 
 
 def fetch_data_from_bb():
@@ -101,9 +102,10 @@ def was_an_interest_rate_change(value):
 
 @scheduler.task('cron', id='rsl', day='1', day_of_week='sat', hour='1')
 def fetch_data_and_calculate_rsl():
+    current_app.logger.info('Starting fetching and calculating RSL')
     fetch_data_from_yahoo()
     calculate_rsl()
-    current_app.logger.info('RSL done.')
+    current_app.logger.info('Fetching and calculating RSL done')
 
 
 def fetch_data_from_yahoo():
@@ -135,17 +137,17 @@ def calculate_rsl():
                            'WHERE quotes.code_id = ? GROUP BY code_id HAVING cnt >= 27',
                            (index_id,)).fetchall()
         if not count:
-            print('No history data for index {}'.format(index['code']))
+            current_app.logger.debug('No history data for index {}'.format(index['code']))
             continue
 
-        print("Count for {} is {}.".format(index['code'], count[0][0]))
+        current_app.logger.info("Count for {} is {}.".format(index['code'], count[0][0]))
         closes = db.execute('SELECT dates.id, quotes.close FROM quotes '
                             'JOIN dates ON dates.id = quotes.date_id AND quotes.code_id = ?'
                             'ORDER BY dates.date DESC',
                             (index_id,)).fetchmany(count[0][0])
-        rsls = calculate_relative_strength(closes)
+        rsl_results = calculate_relative_strength(closes)
 
-        for rsl in rsls:
+        for rsl in rsl_results:
             db.execute('UPDATE quotes SET rsl = ? WHERE code_id = ? AND date_id = ?',
                        (rsl[1], index_id, rsl[0]))
         db.commit()

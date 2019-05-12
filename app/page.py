@@ -8,18 +8,22 @@ bp = Blueprint('page', __name__)
 @bp.route('/indices')
 def indices():
     db = get_db()
+
     codes = db.execute(
         'SELECT * from indices'
     ).fetchall()
+
     return render_template('page/indices.html', indices=codes)
 
 
 @bp.route('/quotes')
 def show_quotes():
     db = get_db()
+
     quotes = db.execute(
         'SELECT * from quotes'
     ).fetchall()
+
     return render_template('page/quotes.html', quotes=quotes)
 
 
@@ -35,7 +39,8 @@ def rsl():
         past = today - timedelta(weeks=weeks)
         start = past - timedelta(days=today.weekday())
         end = start + timedelta(days=6)
-        sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(start, end)
+        sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
+              "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(start, end)
         rsl = db.execute(sql).fetchone()[0]
         if rsl is not None:
             rsl = round(rsl, 4)
@@ -48,6 +53,7 @@ def rsl():
 @bp.route('/gi')
 def gi():
     db = get_db()
+
     germany_indicator = db.execute("""SELECT * FROM germany_indicator WHERE date > '1970-01-01'""").fetchall()
 
     return render_template('page/gi.html', gi=germany_indicator)
