@@ -1,11 +1,9 @@
-import os
 import logging
-
-from flask import Flask, url_for, render_template
-from flask_apscheduler import APScheduler
+import os
 from logging.handlers import SMTPHandler, RotatingFileHandler
 
-scheduler = APScheduler()
+from flask import Flask, render_template
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -23,7 +21,6 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
 
     # ensure the instance folder exists
-
     try:
         os.makedirs(app.instance_path)
     except OSError:
@@ -44,9 +41,6 @@ def create_app(test_config=None):
     from . import page
     app.register_blueprint(page.bp)
     # app.add_url_rule('/', endpoint='index')
-
-    scheduler.init_app(app)
-    scheduler.start()
 
     if not app.debug:
         if app.config['MAIL_SERVER']:
@@ -77,10 +71,6 @@ def create_app(test_config=None):
 
         app.logger.setLevel(logging.DEBUG)
         app.logger.info('Timing observer startup')
-
-    @app.before_first_request
-    def load_tasks():
-        from app import tasks
 
     return app
 
