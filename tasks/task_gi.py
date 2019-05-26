@@ -7,7 +7,7 @@ from pandasdmx import Request
 
 from tasks.db import get_db
 
-logging.basicConfig(filename='/home/markus/timing-observer/app/logs/tasks.txt',
+logging.basicConfig(filename='/home/markus/timing-observer/app/logs/tasks.log',
                     level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
@@ -36,9 +36,8 @@ def fetch_data():
 
 
 def calculate_gi():
-    db = get_db()
     command = """SELECT * FROM germany_indicator WHERE date > '1970-01-01'"""
-    df = pd.read_sql(command, db)
+    df = pd.read_sql(command, get_db())
 
     # Season
     df['tmp_date'] = pd.to_datetime(df['date'].copy())
@@ -54,9 +53,8 @@ def calculate_gi():
     df = df[['date', 'season_point', 'interest_rate', 'interest_point', 'inflation_rate', 'inflation_point',
              'exchange_rate', 'exchange_point', 'sum_of_points']]
 
-    df.to_sql('indicators', db)
+    df.to_sql('indicators')
     #df = df.iloc[::-1]
-    db.close()
 
 
 def calculate_interest_rate(results):

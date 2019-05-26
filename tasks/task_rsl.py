@@ -5,7 +5,7 @@ from tasks.db import get_db
 from tasks.yahoo.YahooDataExtractor import extract_data
 from tasks.yahoo.YahooDataFetcher import fetch_data_with
 
-logging.basicConfig(filename='/home/markus/timing-observer/app/logs/tasks.txt',
+logging.basicConfig(filename='/home/markus/timing-observer/app/logs/tasks.log',
                     level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
