@@ -54,7 +54,7 @@ def calculate_gi():
     df = df[['date', 'season_point', 'interest_rate', 'interest_point', 'inflation_rate', 'inflation_point',
              'exchange_rate', 'exchange_point', 'sum_of_points']]
 
-    df.to_sql('indicators', db)
+    df.to_sql('indicators', db, if_exists='append')
     #df = df.iloc[::-1]
     db.commit()
     db.close()
