@@ -1,13 +1,12 @@
-import requests
-
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
 
+import requests
+from dateutil.relativedelta import relativedelta
 
 URL = "https://finance.yahoo.com/quote/{}/history?period1={}&period2={}&interval=1wk&filter=history&frequency=1wk"
 
 
-def fetch_data(index):
+def fetch_data_with(index):
 
     now = datetime.now()
     a_year_ago = now - relativedelta(months=12)

@@ -1,4 +1,4 @@
-from app.calculator import old_calculate_relative_strength, calculate_relative_strength
+from tasks.calculator import old_calculate_relative_strength, calculate_relative_strength
 
 
 def test_old_calculate_relative_strength():

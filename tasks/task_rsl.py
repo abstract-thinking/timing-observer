@@ -1,19 +1,19 @@
 import logging
 
-from app.calculator import calculate_relative_strength
-from app.db import get_db
-from app.yahoo.YahooDataExtractor import extract_data
-from app.yahoo.YahooDataFetcher import fetch_data
+from tasks.calculator import calculate_relative_strength
+from tasks.db import get_db
+from tasks.yahoo.YahooDataExtractor import extract_data
+from tasks.yahoo.YahooDataFetcher import fetch_data_with
 
 logging.basicConfig(filename='/home/markus/timing-observer/app/logs/tasks.txt',
                     level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def fetch_data_from_yahoo():
+def fetch_data():
     db = get_db()
     indices = db.execute('SELECT id, code FROM indices').fetchall()
     for index in indices:
-        data = fetch_data(index['code'])
+        data = fetch_data_with(index['code'])
         quotes = extract_data(data)
 
         if quotes is not None:
@@ -26,6 +26,7 @@ def fetch_data_from_yahoo():
                 db.execute('INSERT INTO quotes (close, date_id, code_id) VALUES(?, ?, ?)',
                            (quote['close'], date_id['id'], index['id']))
             db.commit()
+    db.close()
 
 
 def calculate_rsl():
@@ -52,10 +53,11 @@ def calculate_rsl():
             db.execute('UPDATE quotes SET rsl = ? WHERE code_id = ? AND date_id = ?',
                        (rsl[1], index_id, rsl[0]))
         db.commit()
+    db.close()
 
 
 if __name__ == "__main__":
     logging.info('Starting RSL task.')
-    fetch_data_from_yahoo()
+    fetch_data()
     calculate_rsl()
-    logging.info("RSL task done.")
+    logging.info('RSL task done.')
