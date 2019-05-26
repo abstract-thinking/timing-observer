@@ -34,11 +34,11 @@ def fetch_data():
     db.commit()
     db.close()
 
+
 def calculate_gi():
-    command = """SELECT * FROM germany_indicator WHERE date > '1970-01-01'"""
     db = get_db()
+    command = """SELECT * FROM germany_indicator WHERE date > '1970-01-01'"""
     df = pd.read_sql(command, db)
-    db.close()
 
     # Season
     df['tmp_date'] = pd.to_datetime(df['date'].copy())
@@ -54,8 +54,9 @@ def calculate_gi():
     df = df[['date', 'season_point', 'interest_rate', 'interest_point', 'inflation_rate', 'inflation_point',
              'exchange_rate', 'exchange_point', 'sum_of_points']]
 
-    df.to_sql('indicators')
+    df.to_sql('indicators', db)
     #df = df.iloc[::-1]
+    db.close()
 
 
 def calculate_interest_rate(results):
