@@ -46,7 +46,7 @@ def calculate_rsl(con):
         rsl_results = calculate_relative_strength(closes)
 
         for rsl in rsl_results:
-            logging.debug("UPDATE quotes SET rsl = {} WHERE code_id = {} AND date_id = {}", (rsl[1], index_id, rsl[0]))
+            logging.debug("For index {} updating RSL to {} for date {}".format(index['code'], rsl[1], rsl[0]))
             con.execute('UPDATE quotes SET rsl = ? WHERE code_id = ? AND date_id = ?', (rsl[1], index_id, rsl[0]))
         con.commit()
 
