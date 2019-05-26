@@ -31,7 +31,7 @@ def calculate_rsl(con):
     indices = con.execute('SELECT id, code FROM indices').fetchall()
     for index in indices:
         index_id = index['id']
-        count = con.execute('SELECT COUNT(*) FROM quotes '
+        count = con.execute('SELECT COUNT(*) AS cnt FROM quotes '
                             'WHERE quotes.code_id = ? GROUP BY code_id HAVING cnt >= 27', (index_id,)).fetchall()
         if not count:
             logging.debug('No history data for index {}'.format(index['code']))
