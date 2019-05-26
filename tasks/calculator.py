@@ -1,5 +1,3 @@
-import logging
-
 import numpy as np
 import pandas as pd
 
@@ -18,7 +16,6 @@ def calculate_relative_strength(rows):
 
         rsl = rows[x][1] / (sum / 27)
         rsl = round(rsl, 4)
-        logging.debug("RSL: " + str(rsl))
         result.append([rows[x][0], rsl])
 
     return result
@@ -28,7 +25,6 @@ def old_calculate_relative_strength(closes):
     _, close_array = np.split(np.array(closes), 2, 1)
     close_series = pd.Series(close_array.flatten()[::-1], dtype=np.float)
     rsl = close_series.tail(1) / close_series.tail(27).mean()
-    logging.debug("RSL: " + str(rsl.iloc[0]))
 
     return float(rsl)
 

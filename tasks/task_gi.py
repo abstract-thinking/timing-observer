@@ -11,7 +11,7 @@ from tasks.db import get_db
 logging.basicConfig(filename='/home/markus/timing-observer/app/logs/tasks.log',
                     level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-SQLITE_DATE_FORMAT = 'YYYY-MM-DD'
+SQLITE_DATE_FORMAT = '%Y-%m-%d'
 INVESTMENT_FRIENDLY_MONTHS = [11, 12, 1, 2, 3, 4]
 
 
