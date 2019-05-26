@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
@@ -10,6 +11,7 @@ from tasks.db import get_db
 logging.basicConfig(filename='/home/markus/timing-observer/app/logs/tasks.log',
                     level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
+SQLITE_DATE_FORMAT = 'YYYY-MM-DD'
 INVESTMENT_FRIENDLY_MONTHS = [11, 12, 1, 2, 3, 4]
 
 
@@ -35,16 +37,21 @@ def calculate_gi(con):
     command = """SELECT * FROM germany_indicator WHERE date > '1970-01-01'"""
     df = pd.read_sql(command, con)
 
-    df['season_point'] = df['date'].apply(lambda date: 1 if date.month in INVESTMENT_FRIENDLY_MONTHS else 0)
+    df['season_point'] = df['date'].apply(lambda date: determine_season_point(date))
     df['inflation_point'] = np.where(df['inflation_rate'].lt(df['inflation_rate'].shift(12)), 1, 0)
     df['exchange_point'] = np.where(df['exchange_rate'].lt(df['exchange_rate'].shift(12)), 1, 0)
-    df['interest_point'] = calculate_interest_rate_change(df['interest_rate'])
+    df['interest_point'] = determine_interest_rate_point(df['interest_rate'])
     df['sum_of_points'] = df['season_point'] + df['inflation_point'] + df['exchange_point'] + df['interest_point']
 
     df.to_sql('germany_indicator', con, if_exists='replace')
 
 
-def calculate_interest_rate_change(interest_rates):
+def determine_season_point(date):
+    d = datetime.strptime(date, SQLITE_DATE_FORMAT)
+    return 1 if d.month in INVESTMENT_FRIENDLY_MONTHS else 0
+
+
+def determine_interest_rate_point(interest_rates):
     # TODO: How does this work exactly? Do I need a test case?
     tmp = pd.DataFrame(interest_rates.values, columns=['decision']).diff()
 
