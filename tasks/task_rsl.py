@@ -31,22 +31,21 @@ def calculate_rsl(con):
     indices = con.execute('SELECT id, code FROM indices').fetchall()
     for index in indices:
         index_id = index['id']
-        count = con.execute('SELECT COUNT(*) AS cnt FROM quotes '
-                            'WHERE quotes.code_id = ? GROUP BY code_id HAVING cnt >= 27',
-                            (index_id,)).fetchall()
+        count = con.execute('SELECT COUNT(*) FROM quotes '
+                            'WHERE quotes.code_id = ? GROUP BY code_id HAVING cnt >= 27', (index_id,)).fetchall()
         if not count:
             logging.debug('No history data for index {}'.format(index['code']))
             continue
 
         logging.debug("Count for {} is {}.".format(index['code'], count[0][0]))
-        closes = con.execute('SELECT dates.id, quotes.close FROM quotes '
+        closes = con.execute('SELECT dates.id, quotes.close, dates.date FROM quotes '
                              'JOIN dates ON dates.id = quotes.date_id AND quotes.code_id = ?'
                              'ORDER BY dates.date DESC',
                              (index_id,)).fetchmany(count[0][0])
         rsl_results = calculate_relative_strength(closes)
 
         for rsl in rsl_results:
-            logging.debug("For index {} updating RSL to {} for date {}".format(index['code'], rsl[1], rsl[0]))
+            logging.debug("For index {} updating RSL to {} for date {}".format(index['code'], rsl[1], rsl[2]))
             con.execute('UPDATE quotes SET rsl = ? WHERE code_id = ? AND date_id = ?', (rsl[1], index_id, rsl[0]))
         con.commit()
 
