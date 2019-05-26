@@ -51,12 +51,8 @@ def calculate_gi():
 
     df['sum_of_points'] = df['season_point'] + df['inflation_point'] + df['exchange_point'] + df['interest_point']
 
-    df = df[['date', 'season_point', 'interest_rate', 'interest_point', 'inflation_rate', 'inflation_point',
-             'exchange_rate', 'exchange_point', 'sum_of_points']]
-
-    df.to_sql('indicators', db, if_exists='append')
+    df.to_sql('germany_indicator', db, if_exists='replace')
     #df = df.iloc[::-1]
-    db.commit()
     db.close()
 
 
@@ -84,4 +80,4 @@ if __name__ == "__main__":
     logging.info('Starting GI task.')
     fetch_data()
     calculate_gi()
-    logging.info('GI done.')
+    logging.info('GI task done.')
