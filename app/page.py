@@ -55,6 +55,6 @@ def gi():
     db = get_db()
 
     germany_indicator = db.execute(
-        """SELECT * FROM germany_indicator WHERE date > '1970-01-01 ORDER BY date DESC'""").fetchall()
+        """SELECT * FROM germany_indicator WHERE date > '1970-01-01' ORDER BY date DESC""").fetchall()
 
     return render_template('page/gi.html', gi=germany_indicator)
