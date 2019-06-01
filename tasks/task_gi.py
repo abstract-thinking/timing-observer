@@ -22,7 +22,7 @@ def fetch_data(con):
     interest_rate = data.iloc[-1][0]
 
     data = ecb.data('ICP/M.U2.N.000000.4.ANR').write()
-    inflation_rate = data.iloc[-2][0]
+    inflation_rate = data.iloc[-1][0]
 
     data = ecb.data('EXR/M.USD.EUR.SP00.E').write()
     exchange_rate = data.iloc[-1][0]
