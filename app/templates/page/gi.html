@@ -5,11 +5,11 @@
         <title>GI</title>
     </head>
     <body>
-        <table>
+    <table border="1">
             <thead>
-                <tr>
+            <tr align="center">
                     <td>Date</td>
-                    <td>Season Point</td>
+                <td>Season Point</td>
                     <td>Interest Rate</td>
                     <td>Interest Point</td>
                     <td>Inflation Rate</td>
@@ -21,7 +21,7 @@
             </thead>
             <tbody>
               {% for entry in gi %}
-                <tr>
+              <tr align="center">
                   <td>{{entry.date}}</td>
                   <td>{{entry.season_point}}</td>
                   <td>{{entry.interest_rate}}</td>

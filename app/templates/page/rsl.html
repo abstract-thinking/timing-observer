@@ -5,16 +5,16 @@
         <title>RSL</title>
     </head>
     <body>
-        <table>
+    <table border="1">
             <thead>
-                <tr>
+            <tr align="center">
                     <td>Date</td>
                     <td>RSL</td>
                 </tr>
             </thead>
             <tbody>
                 {% for entry in result %}
-                <tr>
+                <tr align="center">
                     <td>{{entry[0]}} - {{entry[1]}}</td>
                     <td>{{entry[2]}}</td>
                 </tr>
