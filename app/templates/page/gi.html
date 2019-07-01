@@ -28,7 +28,7 @@
         <td>{{entry.interest_point}}</td>
         <td>{{entry.inflation_rate}}</td>
         <td>{{entry.inflation_point}}</td>
-        <td>{{entry.exchange_rate}}</td>
+        <td>{{'%0.4f'|format(entry.exchange_rate|float)}}</td>
         <td>{{entry.exchange_point}}</td>
         <td>{{entry.sum_of_points}}</td>
     </tr>

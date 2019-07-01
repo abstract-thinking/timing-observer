@@ -39,11 +39,10 @@ def rsl():
         past = today - timedelta(weeks=weeks)
         start = past - timedelta(days=today.weekday())
         end = start + timedelta(days=6)
+
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
               "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(start, end)
         rsl = db.execute(sql).fetchone()[0]
-        if rsl is not None:
-            rsl = round(rsl, 4)
 
         result.append((start, end, rsl))
 
