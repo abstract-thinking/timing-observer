@@ -1,39 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>GI</title>
-    </head>
-    <body>
-    <table border="1" align="center">
-            <thead>
-            <tr align="center">
-                    <td>Date</td>
-                <td>Season Point</td>
-                    <td>Interest Rate</td>
-                    <td>Interest Point</td>
-                    <td>Inflation Rate</td>
-                    <td>Inflation Point</td>
-                    <td>Exchange Rate</td>
-                    <td>Exchange Point</td>
-                    <td>Sum of Points</td>
-                </tr>
-            </thead>
-            <tbody>
-              {% for entry in gi %}
-              <tr align="center">
-                  <td>{{entry.date}}</td>
-                  <td>{{entry.season_point}}</td>
-                  <td>{{entry.interest_rate}}</td>
-                  <td>{{entry.interest_point}}</td>
-                  <td>{{entry.inflation_rate}}</td>
-                  <td>{{entry.inflation_point}}</td>
-                  <td>{{entry.exchange_rate}}</td>
-                  <td>{{entry.exchange_point}}</td>
-                  <td>{{entry.sum_of_points}}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-        </table>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>GI</title>
+</head>
+<body>
+<table border="1" align="center">
+    <thead>
+    <tr align="center">
+        <td>Date</td>
+        <td>Season Point</td>
+        <td>Interest Rate</td>
+        <td>Interest Point</td>
+        <td>Inflation Rate</td>
+        <td>Inflation Point</td>
+        <td>Exchange Rate</td>
+        <td>Exchange Point</td>
+        <td>Sum of Points</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entry in gi %}
+    <tr align="center">
+        <td>{{entry.date}}</td>
+        <td>{{entry.season_point}}</td>
+        <td>{{entry.interest_rate}}</td>
+        <td>{{entry.interest_point}}</td>
+        <td>{{entry.inflation_rate}}</td>
+        <td>{{entry.inflation_point}}</td>
+        <td>{{entry.exchange_rate}}</td>
+        <td>{{entry.exchange_point}}</td>
+        <td>{{entry.sum_of_points}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
 </html>
