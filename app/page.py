@@ -40,7 +40,7 @@ def rsl():
 
     result = []
     for weeks in range(0, 52):
-        begin_of_week = today - timedelta(weeks=weeks, days=SUNDAY)
+        begin_of_week = today - timedelta(weeks=weeks, days=today.weekday())
         end_of_week = calculate_end_of_week(weeks, today.weekday(), begin_of_week)
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
@@ -59,7 +59,7 @@ def calculate_end_of_week(weeks, weekday, begin_of_week):
         else:
             return begin_of_week + timedelta(days=weekday)
 
-    return begin_of_week + timedelta(days=SATURDAY)
+    return begin_of_week + timedelta(days=6)
 
 
 @bp.route('/gi')
