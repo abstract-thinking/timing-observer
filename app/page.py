@@ -5,7 +5,6 @@ from flask import Blueprint, render_template
 from app.db import get_db
 
 SATURDAY = 5
-SUNDAY = 6
 
 bp = Blueprint('page', __name__)
 
@@ -40,7 +39,7 @@ def rsl():
 
     result = []
     for weeks in range(0, 52):
-        begin_of_week = today - timedelta(weeks=weeks, days=SUNDAY)
+        begin_of_week = today - timedelta(weeks=weeks, days=SATURDAY)
         end_of_week = calculate_end_of_week(weeks, today.weekday(), begin_of_week)
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
@@ -54,7 +53,7 @@ def rsl():
 
 def calculate_end_of_week(weeks, weekday, begin_of_week):
     if weeks == 0:
-        if weekday == SUNDAY:
+        if weekday == SATURDAY:
             return begin_of_week
         else:
             return begin_of_week + timedelta(days=weekday)
