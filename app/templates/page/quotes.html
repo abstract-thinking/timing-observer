@@ -5,7 +5,7 @@
         <title>Quotes</title>
     </head>
     <body>
-        <table>
+    <table border="1" align="center" cellpadding="1">
             <thead>
                 <tr>
                     <td>ID</td>
@@ -18,7 +18,7 @@
             <tbody>
               {% for quote in quotes %}
                 <tr>
-                    <td>{{quote.id}</td>
+                    <td>{{quote.id}}</td>
                     <td>{{quote.close}}</td>
                     <td>{{quote.rsl}}</td>
                     <td>{{quote.code_id}}</td>
