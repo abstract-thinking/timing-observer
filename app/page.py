@@ -37,8 +37,8 @@ def rsl():
     result = []
     for weeks in range(0, 52):
         past = today - timedelta(weeks=weeks)
-        start = past - timedelta(days=today.weekday())
-        end = start + timedelta(days=6)
+        start = past - timedelta(days=6)
+        end = start + timedelta(days=today.weekday())
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
               "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(start, end)
