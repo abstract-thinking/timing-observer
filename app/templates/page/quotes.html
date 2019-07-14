@@ -8,21 +8,19 @@
     <table border="1" align="center" cellpadding="1">
             <thead>
                 <tr>
-                    <td>ID</td>
+                    <td>Date</td>
+                    <td>Index</td>
                     <td>Close</td>
                     <td>RSL</td>
-                    <td>Description</td>
-                    <td>Date</td>
                 </tr>
             </thead>
             <tbody>
               {% for quote in quotes %}
                 <tr>
-                    <td>{{quote.id}}</td>
+                    <td>{{quote.date}}</td>
+                    <td>{{quote.description}}</td>
                     <td>{{quote.close}}</td>
                     <td>{{quote.rsl}}</td>
-                    <td>{{quote.description}}</td>
-                    <td>{{quote.date}}</td>
                 </tr>
               {% endfor %}
             </tbody>
