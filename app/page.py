@@ -36,26 +36,15 @@ def rsl():
 
     result = []
     for weeks in range(0, 52):
-        begin_of_week = today - today.subtract(weeks=weeks)
-        end_of_week = calculate_end_of_week(weeks, today.weekday(), begin_of_week)
+        period = today - today.subtract(weeks=weeks)
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
-              "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(begin_of_week, end_of_week)
+              "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(period.start, period.end)
         rsl = db.execute(sql).fetchone()[0]
 
-        result.append((begin_of_week, end_of_week, rsl))
+        result.append((period.start, period.end, rsl))
 
     return render_template('page/rsl.html', result=result)
-
-
-def calculate_end_of_week(weeks, weekday, begin_of_week):
-    if weeks == 0:
-        if weekday == pendulum.SUNDAY:
-            return begin_of_week
-        else:
-            return begin_of_week.add(days=weekday)
-
-    return begin_of_week.end_of('week')
 
 
 @bp.route('/gi')
