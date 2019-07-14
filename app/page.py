@@ -30,6 +30,7 @@ def show_quotes():
 
     return render_template('page/quotes.html', quotes=quotes)
 
+
 @bp.route('/rsl')
 def rsl():
     db = get_db()
@@ -39,7 +40,7 @@ def rsl():
     result = []
     for weeks in range(0, 52):
         begin_of_week = today - timedelta(weeks=weeks, days=SUNDAY)
-        end_of_week = calculate_end_of_week(begin_of_week, today, weeks)
+        end_of_week = calculate_end_of_week(weeks, today.weekday(), begin_of_week)
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
               "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(begin_of_week, end_of_week)
@@ -50,12 +51,12 @@ def rsl():
     return render_template('page/rsl.html', result=result)
 
 
-def calculate_end_of_week(begin_of_week, today, weeks):
+def calculate_end_of_week(weeks, weekday, begin_of_week):
     if weeks == 0:
-        if today.weekday() == SUNDAY:
+        if weekday == SUNDAY:
             return begin_of_week
         else:
-            return begin_of_week + timedelta(days=today.weekday())
+            return begin_of_week + timedelta(days=weekday)
 
     return begin_of_week + timedelta(days=SATURDAY)
 
