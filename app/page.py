@@ -56,9 +56,9 @@ def calculate_end_of_week(weeks, weekday, begin_of_week):
         if weekday == SATURDAY:
             return begin_of_week
         else:
-            return begin_of_week + timedelta(days=weekday)
+            return begin_of_week + timedelta(weeks=weeks, days=weekday)
 
-    return begin_of_week + timedelta(days=SATURDAY)
+    return begin_of_week + timedelta(weeks=1)
 
 
 @bp.route('/gi')
