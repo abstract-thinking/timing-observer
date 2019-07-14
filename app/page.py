@@ -39,10 +39,11 @@ def rsl():
         period = today - today.subtract(weeks=weeks)
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
-              "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(period.start, period.end)
+              "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')" \
+            .format(period.start.to_date_string(), period.end.to_date_string())
         rsl = db.execute(sql).fetchone()[0]
 
-        result.append((period.start, period.end, rsl))
+        result.append((period.start.to_date_string(), period.end.to_date_string(), rsl))
 
     return render_template('page/rsl.html', result=result)
 
