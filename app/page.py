@@ -3,9 +3,6 @@ from flask import Blueprint, render_template
 
 from app.db import get_db
 
-SATURDAY = 5
-SUNDAY = 6
-
 bp = Blueprint('page', __name__)
 
 
@@ -35,12 +32,12 @@ def show_quotes():
 def rsl():
     db = get_db()
 
-    today = pendulum.now()
+    today = pendulum.now().start_of('week')
 
     result = []
     for weeks in range(0, 52):
-        begin_of_week = today - today.substract(weeks=weeks).start_of('week')
-        end_of_week = calculate_end_of_week(weeks, today.weekday(), begin_of_week).end_of('week')
+        begin_of_week = today - today.subtract(weeks=weeks)
+        end_of_week = calculate_end_of_week(weeks, today.weekday(), begin_of_week)
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
               "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(begin_of_week, end_of_week)
@@ -53,12 +50,12 @@ def rsl():
 
 def calculate_end_of_week(weeks, weekday, begin_of_week):
     if weeks == 0:
-        if weekday == SUNDAY:
+        if weekday == pendulum.SUNDAY:
             return begin_of_week
         else:
             return begin_of_week.add(days=weekday)
 
-    return begin_of_week.add(weeks=1)
+    return begin_of_week.end_of('week')
 
 
 @bp.route('/gi')
