@@ -4,8 +4,9 @@ from flask import Blueprint, render_template
 
 from app.db import get_db
 
-SUNDAY = 0
-SATURDAY = 6
+SATURDAY = 5
+SUNDAY = 6
+
 bp = Blueprint('page', __name__)
 
 
