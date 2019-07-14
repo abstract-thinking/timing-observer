@@ -36,7 +36,7 @@ def rsl():
 
     result = []
     for weeks in range(0, 52):
-        period = today - today.subtract(weeks=weeks)
+        period = today.subtract(weeks=weeks)
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
               "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')" \
