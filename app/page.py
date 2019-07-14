@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from flask import Blueprint, render_template
 
 from app.db import get_db
@@ -32,17 +34,12 @@ def show_quotes():
 def rsl():
     db = get_db()
 
-    from datetime import datetime, timedelta
     today = datetime.now().date()
 
     result = []
     for weeks in range(0, 52):
         begin_of_week = today - timedelta(weeks=weeks, days=SUNDAY)
-
-        if weeks == 0 and today.weekday() != SATURDAY:
-            end_of_week = begin_of_week + timedelta(days=today.weekday())
-        else:
-            end_of_week = begin_of_week + timedelta(days=SATURDAY)
+        end_of_week = calculate_end_of_week(begin_of_week, today, weeks)
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
               "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(begin_of_week, end_of_week)
@@ -51,6 +48,16 @@ def rsl():
         result.append((begin_of_week, end_of_week, rsl))
 
     return render_template('page/rsl.html', result=result)
+
+
+def calculate_end_of_week(begin_of_week, today, weeks):
+    if weeks == 0:
+        if today.weekday() == SUNDAY:
+            return begin_of_week
+        else:
+            return begin_of_week + timedelta(days=today.weekday())
+
+    return begin_of_week + timedelta(days=SATURDAY)
 
 
 @bp.route('/gi')
