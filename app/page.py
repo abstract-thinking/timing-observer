@@ -2,6 +2,8 @@ from flask import Blueprint, render_template
 
 from app.db import get_db
 
+SATURDAY = 5
+SUNDAY = 6
 bp = Blueprint('page', __name__)
 
 
@@ -26,7 +28,6 @@ def show_quotes():
 
     return render_template('page/quotes.html', quotes=quotes)
 
-
 @bp.route('/rsl')
 def rsl():
     db = get_db()
@@ -36,15 +37,18 @@ def rsl():
 
     result = []
     for weeks in range(0, 52):
-        past = today - timedelta(weeks=weeks)
-        start = past - timedelta(days=6)
-        end = start + timedelta(days=today.weekday())
+        begin_of_week = today - timedelta(weeks=weeks, days=SUNDAY)
+
+        if weeks == 0 and today.weekday() != SATURDAY:
+            end_of_week = begin_of_week + timedelta(days=today.weekday())
+        else:
+            end_of_week = begin_of_week + timedelta(days=SATURDAY)
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
-              "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(start, end)
+              "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(begin_of_week, end_of_week)
         rsl = db.execute(sql).fetchone()[0]
 
-        result.append((start, end, rsl))
+        result.append((begin_of_week, end_of_week, rsl))
 
     return render_template('page/rsl.html', result=result)
 
