@@ -36,14 +36,15 @@ def rsl():
 
     result = []
     for weeks in range(0, 52):
-        first_day_of_week = today.subtract(weeks=weeks).start_of('week')
+        week = today.subtract(weeks=weeks)
+        first_day_of_week = week.start_of('week').to_date_string()
+        end_day_of_week = week.end_of('week').to_date_string()
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
-              "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')" \
-            .format(first_day_of_week.to_date_string(), first_day_of_week.end_of('week').to_date_string())
+              "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(first_day_of_week, end_day_of_week)
         rsl = db.execute(sql).fetchone()[0]
 
-        result.append((first_day_of_week.to_date_string(), first_day_of_week.end_of('week').to_date_string(), rsl))
+        result.append((first_day_of_week, end_day_of_week, rsl))
 
     return render_template('page/rsl.html', result=result)
 
