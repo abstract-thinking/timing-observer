@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-
+import pendulum
 from flask import Blueprint, render_template
 
 from app.db import get_db
@@ -36,12 +35,12 @@ def show_quotes():
 def rsl():
     db = get_db()
 
-    today = datetime.now().date()
+    today = pendulum.now()
 
     result = []
     for weeks in range(0, 52):
-        begin_of_week = today - timedelta(weeks=weeks, days=(today.weekday() - 1))  # use Sunday
-        end_of_week = calculate_end_of_week(weeks, today.weekday(), begin_of_week)
+        begin_of_week = today - today.substract(weeks=weeks).start_of('week')
+        end_of_week = calculate_end_of_week(weeks, today.weekday(), begin_of_week).end_of('week')
 
         sql = "SELECT avg(rsl) AS 'RSL' FROM quotes WHERE quotes.date_id IN (" \
               "SELECT id FROM dates WHERE date BETWEEN '{}' AND '{}')".format(begin_of_week, end_of_week)
@@ -57,9 +56,9 @@ def calculate_end_of_week(weeks, weekday, begin_of_week):
         if weekday == SUNDAY:
             return begin_of_week
         else:
-            return begin_of_week + timedelta(days=(weekday - 1))
+            return begin_of_week.add(days=weekday)
 
-    return begin_of_week + timedelta(days=7)
+    return begin_of_week.add(weeks=1)
 
 
 @bp.route('/gi')
