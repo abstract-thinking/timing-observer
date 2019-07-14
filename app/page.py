@@ -22,7 +22,7 @@ def show_quotes():
     db = get_db()
 
     quotes = db.execute(
-        'SELECT * from quotes, indices, dates WHERE quotes.codeId = indices.id AND quotes.datesId = dates.id'
+        'SELECT * from quotes, indices, dates WHERE quotes.code_id = indices.id AND quotes.dates_id = dates.id'
     ).fetchall()
 
     return render_template('page/quotes.html', quotes=quotes)
