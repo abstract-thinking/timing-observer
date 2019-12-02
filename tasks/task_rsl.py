@@ -1,7 +1,7 @@
 import logging
+import sqlite3
 
 from tasks.calculator import calculate_relative_strength
-from tasks.db import get_db
 from tasks.yahoo.YahooDataExtractor import extract_data
 from tasks.yahoo.YahooDataFetcher import fetch_data_with
 
@@ -52,7 +52,7 @@ def calculate_rsl(con):
 
 if __name__ == "__main__":
     logging.info('Starting RSL task.')
-    connection = get_db()
+    connection = sqlite3.connect('/home/markus/timing-observer/instance/rsl.sqlite')
     try:
         fetch_data(connection)
         calculate_rsl(connection)

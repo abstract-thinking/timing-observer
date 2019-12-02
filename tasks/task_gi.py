@@ -1,4 +1,5 @@
 import logging
+import sqlite3
 import time
 from datetime import datetime
 
@@ -6,13 +7,13 @@ import numpy as np
 import pandas as pd
 from pandasdmx import Request
 
-from tasks.db import get_db
-
 logging.basicConfig(filename='/home/markus/timing-observer/app/logs/tasks.log',
                     level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 SQLITE_DATE_FORMAT = '%Y-%m-%d'
 INVESTMENT_FRIENDLY_MONTHS = [11, 12, 1, 2, 3, 4]
+
+table_name = 'germany_indicator'
 
 
 def fetch_data(con):
@@ -28,13 +29,13 @@ def fetch_data(con):
     exchange_rate = data.iloc[-1][0]
 
     projection = (time.strftime("%Y-%m-%d"), interest_rate, inflation_rate, exchange_rate)
-    sql = '''INSERT INTO germany_indicator(date, interest_rate, inflation_rate, exchange_rate) VALUES(?,?,?,?)'''
+    sql = "INSERT INTO " + table_name + "(date, interest_rate, inflation_rate, exchange_rate) VALUES(?,?,?,?)"
     con.execute(sql, projection)
     con.commit()
 
 
 def calculate_gi(con):
-    command = """SELECT * FROM germany_indicator WHERE date > '1970-01-01'"""
+    command = "SELECT * FROM " + table_name + " WHERE date > '1970-01-01'"
     df = pd.read_sql(command, con)
 
     df['season_point'] = df['date'].apply(lambda date: determine_season_point(date))
@@ -43,7 +44,7 @@ def calculate_gi(con):
     df['interest_point'] = determine_interest_rate_point(df['interest_rate'])
     df['sum_of_points'] = df['season_point'] + df['inflation_point'] + df['exchange_point'] + df['interest_point']
 
-    df.to_sql('germany_indicator', con, if_exists='replace')
+    df.to_sql(table_name, con, if_exists='replace')
 
 
 def determine_season_point(date):
@@ -74,7 +75,7 @@ def was_interest_rate_reduction(interest_rate_change):
 
 if __name__ == "__main__":
     logging.info('Starting GI task.')
-    connection = get_db()
+    connection = sqlite3.connect('/home/markus/timing-observer/instance/rsl.sqlite')
     try:
         fetch_data(connection)
         calculate_gi(connection)
