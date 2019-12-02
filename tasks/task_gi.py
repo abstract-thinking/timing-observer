@@ -44,7 +44,7 @@ def calculate_gi(con):
     df['interest_point'] = determine_interest_rate_point(df['interest_rate'])
     df['sum_of_points'] = df['season_point'] + df['inflation_point'] + df['exchange_point'] + df['interest_point']
 
-    df.to_sql(table_name, con, if_exists='replace')
+    df.to_sql(table_name, con, if_exists='replace', index=True, index_label='date')
 
 
 def determine_season_point(date):
