@@ -52,10 +52,15 @@ def calculate_rsl(con):
 
 if __name__ == "__main__":
     logging.info('Starting RSL task.')
-    connection = sqlite3.connect('/home/markus/timing-observer/instance/rsl.sqlite')
+
+    db = sqlite3.connect(
+        '/home/markus/timing-observer/instance/rsl.sqlite',
+        detect_types=sqlite3.PARSE_DECLTYPES,
+    )
+    db.row_factory = sqlite3.Row
     try:
-        fetch_data(connection)
-        calculate_rsl(connection)
+        fetch_data(db)
+        calculate_rsl(db)
     finally:
-        connection.close()
+        db.close()
     logging.info('RSL task done.')
