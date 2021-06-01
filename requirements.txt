@@ -67,7 +67,7 @@ tablib==0.12.1
 -e git+https://github.com/abstract-thinking/timing-observer.git@37a403ce9eebd2f9fa596a2afaee4058031c0766#egg=timingobserver
 tzlocal==1.5.1
 unicodecsv==0.14.1
-urllib3==1.22
+urllib3==1.26.5
 virtualenv==15.2.0
 virtualenvwrapper-win==1.2.5
 Werkzeug==0.15.3
