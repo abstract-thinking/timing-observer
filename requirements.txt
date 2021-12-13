@@ -26,7 +26,7 @@ Jinja2==2.10
 jira==1.0.15
 jsonpath-rw==1.4.0
 kiwisolver==1.0.1
-lxml==4.2.1
+lxml==4.6.5
 Mako==1.0.7
 MarkupSafe==1.0
 matplotlib==2.2.2
