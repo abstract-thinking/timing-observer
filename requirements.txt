@@ -34,7 +34,7 @@ more-itertools==4.1.0
 mpl-finance==0.10.0
 mutagen==1.40.0
 ndg-httpsclient==0.4.4
-numpy==1.14.3
+numpy==1.22.0
 oauthlib==2.1.0
 odfpy==1.4.0
 openpyxl==2.5.4
