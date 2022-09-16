@@ -27,7 +27,7 @@ jira==1.0.15
 jsonpath-rw==1.4.0
 kiwisolver==1.0.1
 lxml==4.2.1
-Mako==1.0.7
+Mako==1.2.2
 MarkupSafe==1.0
 matplotlib==2.2.2
 more-itertools==4.1.0
